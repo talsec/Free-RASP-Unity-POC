@@ -109,3 +109,21 @@ Debug.Log("Unity - Malware detected " + malwareList);
 Once you are done with your game in Unity Hub; proceed to export the project. Once exported, open up the project in Android Studio and add freeRASP’s maven repository address into your settings.gradle file. 
 
 ![Import freeRASP Package](screenshots/maven-repo-android.png)
+
+# iOS 
+
+## Prerequisites
+
+- Unity Editor 6000.1.2f1 and above
+
+## Install Plugin
+First you will need to install freeRASP for unity. Head over to [Github Unity Plugin Release Link]. Download the latest plugin. Notice the plugin file ends with .unitypackage
+
+Proceed to import the plugin into your unity project. Right click on Assets -> Import Package -> Custom Package 
+
+![Import freeRASP Package](screenshots/import-package.png)
+
+## Setup the Configuration for your App
+For freeRASP to work properly, you need to configure and initialize it with all the necessary settings. These values need to be completed for the plugin to function correctly. You can find detailed explanations of each configuration option on the API documentation page.
+
+In the entry point to your app, import freeRASP and add the following code:
