@@ -1,11 +1,11 @@
 # Android 
 ## Prerequisites
 
-- Unity Editor 6000.1.2f1 and above
+- Unity 6 and above
 - Min SDK level 23 
 
 ## Install Plugin
-First you will need to install freeRASP for unity. Head over to [Github Unity Plugin Release Link]. Download the latest plugin. Notice the plugin file ends with .unitypackage
+First you will need to install freeRASP for unity. Head over to [Github Unity Plugin Release Link](https://github.com/talsec/Free-RASP-Unity-POC/blob/main/freeRASP.unitypackage). Download the latest plugin. Notice the plugin file ends with .unitypackage
 
 Proceed to import the plugin into your unity project. Right click on Assets -> Import Package -> Custom Package 
 
@@ -106,15 +106,23 @@ public void onMalwareDetected(List<SuspiciousAppInfo> malwareList)
 ```
 
 ## Add freeRASP Maven Repository 
-Once you are done with your game in Unity Hub; proceed to export the project. Once exported, open up the project in Android Studio and add freeRASP’s maven repository address into your settings.gradle file. 
+Once you are done with your game in Unity Hub; proceed to export the project. Once exported, open up the project in Android Studio and add freeRASP’s maven repository address into your `settings.gradle` file. 
 
+```gradle
+repositories {
+    google()
+    mavenCentral()
+    maven { url = uri("https://jitpack.io") }
+    maven { url = uri("https://europe-west3-maven.pkg.dev/talsec-artifact-repository/freerasp") }
+}
+```
 ![Import freeRASP Package](screenshots/maven-repo-android.png)
 
 # iOS 
 
 ## Prerequisites
 
-- Unity Editor 6000.1.2f1 and above
+- Unity 6 and above
 
 ## Install Plugin
 First you will need to install freeRASP for unity. Head over to [Github Unity Plugin Release Link]. Download the latest plugin. Notice the plugin file ends with .unitypackage
