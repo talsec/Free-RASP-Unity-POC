@@ -5,7 +5,7 @@
 - Min SDK level 23 
 
 ## Install Plugin
-First you will need to install freeRASP for unity. Head over to [Github Unity Plugin Release Link](https://github.com/talsec/Free-RASP-Unity-POC/blob/main/freeRASP.unitypackage). Download the latest plugin. Notice the plugin file ends with .unitypackage
+First you will need to install freeRASP for unity. Head over to [Github Unity Plugin Release Link](https://github.com/talsec/Free-RASP-Unity-POC/releases/download/0.1.0/freeRASP.unitypackage). Download the latest plugin. Notice the plugin file ends with .unitypackage
 
 Proceed to import the plugin into your unity project. Right click on Assets -> Import Package -> Custom Package 
 
