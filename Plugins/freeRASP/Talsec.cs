@@ -62,34 +62,6 @@ public class TalsecPlugin : MonoBehaviour
         }
     }
 
-    // public void init(string[] appBundleIds, string teamId, string watcherMailAddress, bool isProd) {
-    //     if (Application.platform == RuntimePlatform.Android)
-    //     {
-    //         // Get the current activity
-    //         using (AndroidJavaClass unityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer"))
-    //         {
-    //             currentActivity = unityPlayer.GetStatic<AndroidJavaObject>("currentActivity");
-    //             Debug.Log(currentActivity);
-    //             javaControllerObject = new AndroidJavaObject(ControllerName);
-    //             Debug.Log(javaControllerObject);
-
-    //             // Register this GameObject to receive callbacks
-    //             // We pass the name of this GameObject and the callback method names
-    //             javaControllerObject.Call("setUnityGameObjectCallback", gameObject.name);
-    //         }
-
-    //         // Call a method with parameters
-    //         string result = javaControllerObject.Call<string>("initializeTalsec", currentActivity);
-    //         Debug.Log(result);
-    //         Debug.Log("Done initializing Talsec");
-    //     }
-
-    //     // initalize talsec on ios
-    //     #if UNITY_IOS && !UNITY_EDITOR
-    //         initiOSTalsec(appBundleIds, teamId, watcherMailAddress, isProd);
-    //     #endif
-    // }
-
     public void initAndroidTalsec(string packageName, string [] signingCertificateHashBase64, string [] blacklistedPackageNames, string [] supportedAlternativeStores,  string watcherMailAddress, bool isProd)
     {
         if (Application.platform == RuntimePlatform.Android)
