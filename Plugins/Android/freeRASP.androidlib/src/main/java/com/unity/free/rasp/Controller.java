@@ -21,13 +21,12 @@ public class Controller implements ThreatListener.ThreatDetected
     }
 
     public void initializeTalsec(Context context, String packageName,
-                                   String [] signingCertificateBase64Hash, String [] blacklistedPackages,
+                                   String [] signingCertificateBase64Hash,
                                    String [] supportedAlternativeStores,
                                    String watcherEmailAddress, boolean isProd) {
         if(!talSecInitialized) {
             TalsecConfig config = new TalsecConfig.Builder(packageName,
                     signingCertificateBase64Hash)
-                    .blacklistedPackageNames(blacklistedPackages)
                     .supportedAlternativeStores(supportedAlternativeStores)
                     .watcherMail(watcherEmailAddress)
                     .prod(isProd)

@@ -21,12 +21,11 @@ namespace Talsec.freeRASPTestApp
             // Android related configs
             string expectedPackageName = "com.unity.freeRASP";
             string[] expectedSigningCertificateHashBase64 = new string[] { "Tmac/QIomCqEGS1jYqy9cMMrqaitVoZLpjXzCMnt55Q=" };
-            string[] blacklistedPackageNames = new string[] { "com.spotify.music", "com.leavjenn.hews2" };
             string[] supportedAlternativeStores = new string[] { "com.sec.android.app.samsungapps" };
 
             // initialize talsec
             TalsecPlugin.Instance.initAndroidTalsec(expectedPackageName, expectedSigningCertificateHashBase64, 
-                blacklistedPackageNames, supportedAlternativeStores, watcherMailAddress, isProd);
+                supportedAlternativeStores, watcherMailAddress, isProd);
             TalsecPlugin.Instance.setAndroidCallback(this); // set Android callback
         }
 

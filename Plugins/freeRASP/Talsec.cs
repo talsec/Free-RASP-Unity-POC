@@ -62,7 +62,7 @@ public class TalsecPlugin : MonoBehaviour
         }
     }
 
-    public void initAndroidTalsec(string packageName, string [] signingCertificateHashBase64, string [] blacklistedPackageNames, string [] supportedAlternativeStores,  string watcherMailAddress, bool isProd)
+    public void initAndroidTalsec(string packageName, string [] signingCertificateHashBase64, string [] supportedAlternativeStores,  string watcherMailAddress, bool isProd)
     {
         if (Application.platform == RuntimePlatform.Android)
         {
@@ -78,7 +78,7 @@ public class TalsecPlugin : MonoBehaviour
             }
 
             // Call a method with parameters
-            javaControllerObject.Call("initializeTalsec", currentActivity, packageName, signingCertificateHashBase64, blacklistedPackageNames, supportedAlternativeStores, watcherMailAddress, isProd);
+            javaControllerObject.Call("initializeTalsec", currentActivity, packageName, signingCertificateHashBase64, supportedAlternativeStores, watcherMailAddress, isProd);
             Debug.Log("Done initializing Talsec");
         }
     }
