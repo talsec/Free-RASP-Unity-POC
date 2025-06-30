@@ -37,9 +37,9 @@ public class Game : MonoBehaviour
         string[] supportedAlternativeStores = new string[] { "com.sec.android.app.samsungapps" };
 
         // initialize talsec
+        TalsecPlugin.Instance.setAndroidCallback(this); // set Android callback
         TalsecPlugin.Instance.initAndroidTalsec(expectedPackageName, expectedSigningCertificateHashBase64,
         blacklistedPackageNames, supportedAlternativeStores, watcherMailAddress, isProd);
-        TalsecPlugin.Instance.setAndroidCallback(this); // set Android callback
     }
 
     // Update is called once per frame
@@ -99,10 +99,26 @@ public void onDeviceBindingDetected() {
     Debug.Log("Unity - Device binding detected");
 }
 
-public void onMalwareDetected(List<SuspiciousAppInfo> malwareList)
-{
-    Debug.Log("Unity - Malware detected " + malwareList);
+public void onUnlockedDeviceDetected() {
+    Debug.Log("Unity - Unlocked device detected");
 }
+
+public void onHardwareBackedKeystoreNotAvailableDetected() {
+    Debug.Log("Unity - Hardware backed keystore not available detected");
+}
+
+public void onDeveloperModeDetected() {
+    Debug.Log("Unity - Developer mode detected");
+}
+
+public void onADBEnabledDetected() {
+    Debug.Log("Unity - ADB enabled detected");
+}
+
+public void onSystemVPNDetected() {
+    Debug.Log("Unity - System VPN detected");
+}
+
 ```
 
 ## Add freeRASP Maven Repository 
@@ -156,8 +172,8 @@ public class IOSGame : MonoBehaviour
         string teamId = "TEAM ID";
 
         // initialize talsec
-        TalsecPlugin.Instance.initiOSTalsec(appBundleIds, teamId, watcherMailAddress, isProd);
         TalsecPlugin.Instance.setiOSCallback(this); // set callback
+        TalsecPlugin.Instance.initiOSTalsec(appBundleIds, teamId, watcherMailAddress, isProd);
     }
 
 }
