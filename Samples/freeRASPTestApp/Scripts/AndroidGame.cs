@@ -24,12 +24,12 @@ namespace Talsec.freeRASPTestApp
             string[] supportedAlternativeStores = new string[] { "com.sec.android.app.samsungapps" };
 
             // initialize talsec
+            TalsecPlugin.Instance.setAndroidCallback(this); // set Android callback
             TalsecPlugin.Instance.initAndroidTalsec(expectedPackageName, expectedSigningCertificateHashBase64, 
                 supportedAlternativeStores, watcherMailAddress, isProd);
-            TalsecPlugin.Instance.setAndroidCallback(this); // set Android callback
         }
 
-        // Implementation of IAndroidCallback interface
+        // Implementation of AndroidThreatDetectedCallback interface
         public void onRootDetected()
         {
             Debug.Log("Unity - Root detected");
@@ -74,11 +74,6 @@ namespace Talsec.freeRASPTestApp
 
         public void onDeviceBindingDetected() {
             Debug.Log("Unity - Device binding detected");
-        }
-
-        public void onMalwareDetected(List<SuspiciousAppInfo> malwareList)
-        {
-            Debug.Log("Unity - Malware detected " + malwareList);
         }
     }
 }

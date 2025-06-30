@@ -11,7 +11,6 @@ public interface AndroidThreatDetectedCallback
     void onHookDetected();
     void onDeviceBindingDetected();
     void onObfuscationIssuesDetected();
-    void onMalwareDetected(List<SuspiciousAppInfo> malwareList);
     void onScreenshotDetected();
     void onScreenRecordingDetected();
 } 

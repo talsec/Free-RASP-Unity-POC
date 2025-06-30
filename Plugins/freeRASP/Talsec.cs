@@ -24,7 +24,7 @@ public class TalsecPlugin : MonoBehaviour
         private static extern void _initTalsec(string[] appBundleIds, int appBundleIdsCount, string appTeamId, string watcherMailAddress, bool isProd);
     #endif
 
-    readonly string ControllerName = "com.unity.free.rasp.Controller";
+    private readonly string ControllerName = "com.unity.free.rasp.Controller";
     
     // Singleton instance
     private static TalsecPlugin _instance;
@@ -105,51 +105,51 @@ public class TalsecPlugin : MonoBehaviour
     public void scanResultIOS(string threatType) 
     {
         if(this.iosCallback != null) {
-
-            if(threatType == "signature") {
-                this.iosCallback.signatureDetected();
-            }
-            if(threatType == "jailbreak") {
-                this.iosCallback.jailbreakDetected();
-            }
-            if(threatType == "debugger") {
-                this.iosCallback.debuggerDetected();
-            }
-            if(threatType == "runtimeManipulation") {
-                this.iosCallback.runtimeManipulationDetected();
-            }
-            if(threatType == "passcode") {
-                this.iosCallback.passcodeDetected();
-            }
-            if(threatType == "passcodeChange") {
-                this.iosCallback.passcodeChangeDetected();
-            }
-            if(threatType == "simulator") {
-                this.iosCallback.simulatorDetected();
-            }
-            if(threatType == "missingSecureEnclave") {
-                this.iosCallback.missingSecureEnclaveDetected();
-            }
-            if(threatType == "deviceChange") {
-                this.iosCallback.deviceBindingDetected();
-            }
-            if(threatType == "deviceID") {
-                this.iosCallback.deviceIDDetected();
-            }
-            if(threatType == "unofficialStore") {
-                this.iosCallback.unofficialStoreDetected();
-            }
-            if(threatType == "systemVPN") {
-                this.iosCallback.systemVPNDetected();
-            }
-            if(threatType == "screenshot") {
-                this.iosCallback.screenshotDetected();
-            }
-            if(threatType == "screenRecording") {
-                this.iosCallback.screenRecordingDetected();
+            switch(threatType) {
+                case "signature":
+                    this.iosCallback.signatureDetected();
+                    break;
+                case "jailbreak":
+                    this.iosCallback.jailbreakDetected();
+                    break;
+                case "debugger":
+                    this.iosCallback.debuggerDetected();
+                    break;
+                case "runtimeManipulation":
+                    this.iosCallback.runtimeManipulationDetected();
+                    break;
+                case "passcode":
+                    this.iosCallback.passcodeDetected();
+                    break;
+                case "passcodeChange":
+                    this.iosCallback.passcodeChangeDetected();
+                    break;
+                case "simulator":
+                    this.iosCallback.simulatorDetected();
+                    break;
+                case "missingSecureEnclave":
+                    this.iosCallback.missingSecureEnclaveDetected();
+                    break;
+                case "deviceChange":
+                    this.iosCallback.deviceBindingDetected();
+                    break;
+                case "deviceID":
+                    this.iosCallback.deviceIDDetected();
+                    break;
+                case "unofficialStore":
+                    this.iosCallback.unofficialStoreDetected();
+                    break;
+                case "systemVPN":
+                    this.iosCallback.systemVPNDetected();
+                    break;
+                case "screenshot":
+                    this.iosCallback.screenshotDetected();
+                    break;
+                case "screenRecording":
+                    this.iosCallback.screenRecordingDetected();
+                    break;
             }
         }
-        
     }
 
     // this method is called by the java side module
@@ -157,39 +157,38 @@ public class TalsecPlugin : MonoBehaviour
         // Debug.Log("Scan Result Callback Name: " + talsecScanResultCallbackName);
         if (Application.platform == RuntimePlatform.Android)
         {
-            if(talsecScanResultCallbackName == "onRootDetected") {
-                this.androidCallback.onRootDetected();
-            }
-            if(talsecScanResultCallbackName == "onTamperDetected") {
-                this.androidCallback.onTamperDetected();
-            }
-            if(talsecScanResultCallbackName == "onDebuggerDetected") {
-                this.androidCallback.onDebuggerDetected();
-            }
-            if(talsecScanResultCallbackName == "onEmulatorDetected") {
-                this.androidCallback.onEmulatorDetected();
-            }
-            if(talsecScanResultCallbackName == "onObfuscationIssuesDetected") {
-                this.androidCallback.onObfuscationIssuesDetected();
-            }
-            if(talsecScanResultCallbackName == "onScreenshotDetected") {
-                this.androidCallback.onScreenshotDetected();
-            }
-            if(talsecScanResultCallbackName == "onScreenRecordingDetected") {
-                this.androidCallback.onScreenRecordingDetected();
-            }
-            if(talsecScanResultCallbackName == "onUntrustedInstallationSourceDetected") {
-                this.androidCallback.onUntrustedInstallationSourceDetected();
+            switch(talsecScanResultCallbackName) {
+                case "onRootDetected":
+                    this.androidCallback.onRootDetected();
+                    break;
+                case "onTamperDetected":
+                    this.androidCallback.onTamperDetected();
+                    break;
+                case "onDebuggerDetected":
+                    this.androidCallback.onDebuggerDetected();
+                    break;
+                case "onEmulatorDetected":
+                    this.androidCallback.onEmulatorDetected();
+                    break;
+                case "onObfuscationIssuesDetected":
+                    this.androidCallback.onObfuscationIssuesDetected();
+                    break;
+                case "onScreenshotDetected":
+                    this.androidCallback.onScreenshotDetected();
+                    break;
+                case "onScreenRecordingDetected":
+                    this.androidCallback.onScreenRecordingDetected();
+                    break;
+                case "onUntrustedInstallationSourceDetected":
+                    this.androidCallback.onUntrustedInstallationSourceDetected();
+                    break;
+                case "onHookDetected":
+                    this.androidCallback.onHookDetected();
+                    break;
+                case "onDeviceBindingDetected":
+                    this.androidCallback.onDeviceBindingDetected();
+                    break;
             }
         }
-    }
-
-    // this method is called by the java side module
-    public void onMalwareDetected(string result) {
-        // Debug.Log("C# onMalwareDetected " + result);
-        List<SuspiciousAppInfo> malwareList = JsonUtility.FromJson<SuspiciousAppInfoList>(
-            "{ \"items\": " + result + "}"
-        ).items;
-        this.androidCallback.onMalwareDetected(malwareList);
     }
 }

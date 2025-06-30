@@ -20,8 +20,8 @@ namespace Talsec.freeRASPTestApp
             string teamId = "TEAM ID";
 
             // initialize talsec
-            TalsecPlugin.Instance.initiOSTalsec(appBundleIds, teamId, watcherMailAddress, isProd);
             TalsecPlugin.Instance.setiOSCallback(this); // set callback
+            TalsecPlugin.Instance.initiOSTalsec(appBundleIds, teamId, watcherMailAddress, isProd);
         }
 
         // Implementation of IOSThreatDetectedCallback interface

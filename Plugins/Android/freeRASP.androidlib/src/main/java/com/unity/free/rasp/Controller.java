@@ -54,8 +54,7 @@ public class Controller implements ThreatListener.ThreatDetected
 
     @Override
     public void onMalwareDetected(List<SuspiciousAppInfo> list) {
-        String result = list.toString();
-        UnityPlayer.UnitySendMessage(this.gameObjectName, "scanResultAndroid", result);
+        // not implemented yet
     }
 
     @Override
