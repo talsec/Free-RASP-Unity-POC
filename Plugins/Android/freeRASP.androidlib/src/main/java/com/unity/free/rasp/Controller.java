@@ -11,7 +11,7 @@ import com.aheaditec.talsec_security.security.api.ThreatListener;
 
 import java.util.List;
 
-public class Controller implements ThreatListener.ThreatDetected
+public class Controller implements ThreatListener.ThreatDetected, ThreatListener.DeviceState
 {
     private static final String TAG = Controller.class.getSimpleName();
     private boolean talSecInitialized;
@@ -31,7 +31,7 @@ public class Controller implements ThreatListener.ThreatDetected
                     .watcherMail(watcherEmailAddress)
                     .prod(isProd)
                     .build();
-            ThreatListener threatListener = new ThreatListener(this);
+            ThreatListener threatListener = new ThreatListener(this, this);
             threatListener.registerListener(context);
             Talsec.start(context, config);
             talSecInitialized = true;
@@ -96,4 +96,29 @@ public class Controller implements ThreatListener.ThreatDetected
     public void onScreenRecordingDetected() {
         UnityPlayer.UnitySendMessage(this.gameObjectName, "scanResultAndroid", "onScreenRecordingDetected");
     }
+
+    @Override
+    public void onUnlockedDeviceDetected() {
+        UnityPlayer.UnitySendMessage(this.gameObjectName, "scanResultAndroid", "onUnlockedDeviceDetected");
+    }
+
+    @Override
+    public void onHardwareBackedKeystoreNotAvailableDetected() {
+        UnityPlayer.UnitySendMessage(this.gameObjectName, "scanResultAndroid", "onHardwareBackedKeystoreNotAvailableDetected");
+    }
+
+    @Override
+    public void onDeveloperModeDetected() {
+        UnityPlayer.UnitySendMessage(this.gameObjectName, "scanResultAndroid", "onDeveloperModeDetected");
+    }
+
+    @Override
+    public void onADBEnabledDetected() {
+        UnityPlayer.UnitySendMessage(this.gameObjectName, "scanResultAndroid", "onADBEnabledDetected");
+    }
+
+    @Override
+    public void onSystemVPNDetected() {
+        UnityPlayer.UnitySendMessage(this.gameObjectName, "scanResultAndroid", "onSystemVPNDetected");
+    }       
 }

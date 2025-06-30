@@ -154,7 +154,6 @@ public class TalsecPlugin : MonoBehaviour
 
     // this method is called by the java side module
     public void scanResultAndroid(string talsecScanResultCallbackName) {
-        // Debug.Log("Scan Result Callback Name: " + talsecScanResultCallbackName);
         if (Application.platform == RuntimePlatform.Android)
         {
             switch(talsecScanResultCallbackName) {
@@ -187,6 +186,21 @@ public class TalsecPlugin : MonoBehaviour
                     break;
                 case "onDeviceBindingDetected":
                     this.androidCallback.onDeviceBindingDetected();
+                    break;
+                case "onUnlockedDeviceDetected":
+                    this.androidCallback.onUnlockedDeviceDetected();
+                    break;
+                case "onHardwareBackedKeystoreNotAvailableDetected":
+                    this.androidCallback.onHardwareBackedKeystoreNotAvailableDetected();
+                    break;
+                case "onDeveloperModeDetected": 
+                    this.androidCallback.onDeveloperModeDetected();
+                    break;
+                case "onADBEnabledDetected":
+                    this.androidCallback.onADBEnabledDetected();
+                    break;
+                case "onSystemVPNDetected":
+                    this.androidCallback.onSystemVPNDetected();
                     break;
             }
         }

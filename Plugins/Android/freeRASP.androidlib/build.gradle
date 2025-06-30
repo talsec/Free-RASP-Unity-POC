@@ -31,10 +31,9 @@ android {
 
 
 dependencies {
-    //implementation fileTree(dir: 'libs', include: ['*.jar'])
     compileOnly files('libs/unity-classes.jar')
     // freeRASP SDK  
-    implementation 'com.aheaditec.talsec.security:TalsecSecurity-Community:15.0.0'
+    implementation 'com.aheaditec.talsec.security:TalsecSecurity-Community:15.1.0'
     // test dep
     implementation("com.google.code.gson:gson:2.13.1")
 }

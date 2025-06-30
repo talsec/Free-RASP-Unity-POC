@@ -13,4 +13,9 @@ public interface AndroidThreatDetectedCallback
     void onObfuscationIssuesDetected();
     void onScreenshotDetected();
     void onScreenRecordingDetected();
+    void onUnlockedDeviceDetected();
+    void onHardwareBackedKeystoreNotAvailableDetected();
+    void onDeveloperModeDetected();
+    void onADBEnabledDetected();
+    void onSystemVPNDetected();
 } 

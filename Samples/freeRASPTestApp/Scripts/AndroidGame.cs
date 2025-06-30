@@ -75,5 +75,25 @@ namespace Talsec.freeRASPTestApp
         public void onDeviceBindingDetected() {
             Debug.Log("Unity - Device binding detected");
         }
+    
+        public void onUnlockedDeviceDetected() {
+            Debug.Log("Unity - Unlocked device detected");
+        }
+
+        public void onHardwareBackedKeystoreNotAvailableDetected() {
+            Debug.Log("Unity - Hardware backed keystore not available detected");
+        }
+
+        public void onDeveloperModeDetected() {
+            Debug.Log("Unity - Developer mode detected");
+        }
+
+        public void onADBEnabledDetected() {
+            Debug.Log("Unity - ADB enabled detected");
+        }
+
+        public void onSystemVPNDetected() {
+            Debug.Log("Unity - System VPN detected");
+        }
     }
 }
