@@ -38,18 +38,25 @@ public class Controller implements ThreatListener.ThreatDetected, ThreatListener
         }
     }
 
+    public void stopTalsec() {
+        if(talSecInitialized) {
+            Talsec.stop();
+            talSecInitialized = false;
+        }
+    }
+
     public void setUnityGameObjectCallback(String gameObjectName) {
         this.gameObjectName = gameObjectName;
     }
 
     @Override
     public void onRootDetected() {
-        UnityPlayer.UnitySendMessage(this.gameObjectName, "scanResultAndroid", "onRootDetected");
+        UnityPlayer.UnitySendMessage(this.gameObjectName, "scanResultAndroid", "onPrivilegedAccess");
     }
 
     @Override
     public void onTamperDetected() {
-        UnityPlayer.UnitySendMessage(this.gameObjectName, "scanResultAndroid", "onTamperDetected");
+        UnityPlayer.UnitySendMessage(this.gameObjectName, "scanResultAndroid", "onAppIntegrity");
     }
 
     @Override
@@ -59,66 +66,66 @@ public class Controller implements ThreatListener.ThreatDetected, ThreatListener
 
     @Override
     public void onDebuggerDetected() {
-        UnityPlayer.UnitySendMessage(this.gameObjectName, "scanResultAndroid", "onDebuggerDetected");
+        UnityPlayer.UnitySendMessage(this.gameObjectName, "scanResultAndroid", "onDebug");
     }
 
     @Override
     public void onEmulatorDetected() {
-        UnityPlayer.UnitySendMessage(this.gameObjectName, "scanResultAndroid", "onEmulatorDetected");
+        UnityPlayer.UnitySendMessage(this.gameObjectName, "scanResultAndroid", "onSimulator");
     }
 
     @Override
     public void onUntrustedInstallationSourceDetected() {
-        UnityPlayer.UnitySendMessage(this.gameObjectName, "scanResultAndroid", "onUntrustedInstallationSourceDetected");
+        UnityPlayer.UnitySendMessage(this.gameObjectName, "scanResultAndroid", "onUnofficialStore");
     }
 
     @Override
     public void onHookDetected() {
-        UnityPlayer.UnitySendMessage(this.gameObjectName, "scanResultAndroid", "onHookDetected");
+        UnityPlayer.UnitySendMessage(this.gameObjectName, "scanResultAndroid", "onHook");
     }
 
     @Override
     public void onDeviceBindingDetected() {
-        UnityPlayer.UnitySendMessage(this.gameObjectName, "scanResultAndroid", "onDeviceBindingDetected");
+        UnityPlayer.UnitySendMessage(this.gameObjectName, "scanResultAndroid", "onDeviceBinding");
     }
 
     @Override
     public void onObfuscationIssuesDetected() {
-        UnityPlayer.UnitySendMessage(this.gameObjectName, "scanResultAndroid", "onObfuscationIssuesDetected");
+        UnityPlayer.UnitySendMessage(this.gameObjectName, "scanResultAndroid", "onObfuscationIssues");
     }
 
     @Override
     public void onScreenshotDetected() {
-        UnityPlayer.UnitySendMessage(this.gameObjectName, "scanResultAndroid", "onScreenshotDetected");
+        UnityPlayer.UnitySendMessage(this.gameObjectName, "scanResultAndroid", "onScreenshot");
     }
 
     @Override
     public void onScreenRecordingDetected() {
-        UnityPlayer.UnitySendMessage(this.gameObjectName, "scanResultAndroid", "onScreenRecordingDetected");
+        UnityPlayer.UnitySendMessage(this.gameObjectName, "scanResultAndroid", "onScreenRecording");
     }
 
     @Override
     public void onUnlockedDeviceDetected() {
-        UnityPlayer.UnitySendMessage(this.gameObjectName, "scanResultAndroid", "onUnlockedDeviceDetected");
+        UnityPlayer.UnitySendMessage(this.gameObjectName, "scanResultAndroid", "onPasscode");
     }
 
     @Override
     public void onHardwareBackedKeystoreNotAvailableDetected() {
-        UnityPlayer.UnitySendMessage(this.gameObjectName, "scanResultAndroid", "onHardwareBackedKeystoreNotAvailableDetected");
+        UnityPlayer.UnitySendMessage(this.gameObjectName, "scanResultAndroid", "onSecureHardwareNotAvailable");
     }
 
     @Override
     public void onDeveloperModeDetected() {
-        UnityPlayer.UnitySendMessage(this.gameObjectName, "scanResultAndroid", "onDeveloperModeDetected");
+        UnityPlayer.UnitySendMessage(this.gameObjectName, "scanResultAndroid", "onDevMode");
     }
 
     @Override
     public void onADBEnabledDetected() {
-        UnityPlayer.UnitySendMessage(this.gameObjectName, "scanResultAndroid", "onADBEnabledDetected");
+        UnityPlayer.UnitySendMessage(this.gameObjectName, "scanResultAndroid", "onADBEnabled");
     }
 
     @Override
     public void onSystemVPNDetected() {
-        UnityPlayer.UnitySendMessage(this.gameObjectName, "scanResultAndroid", "onSystemVPNDetected");
+        UnityPlayer.UnitySendMessage(this.gameObjectName, "scanResultAndroid", "onSystemVPN");
     }       
 }

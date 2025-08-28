@@ -13,41 +13,31 @@ extension SecurityThreatCenter: SecurityThreatHandler {
         // Handle each threat type individually
         switch securityThreat {
             case .signature:
-                message = "signature"
-                // handleAppIntegrityThreat()
+                message = "onAppIntegrity"
             case .jailbreak:
-                message = "jailbreak"
-                // handleJailbreakThreat()
+                message = "onPrivilegedAccess"
             case .debugger:
-                message = "debugger"
-                // handleDebuggerThreat()
+                message = "onDebug"
             case .runtimeManipulation:
-                message = "runtimeManipulation"
-                // handleRuntimeManipulationThreat()
+                message = "onRuntimeManipulation"
             case .passcode:
-                message = "passcode"
-                // handlePasscodeThreat()
+                message = "onPasscode"
             case .passcodeChange:
-                message = "passcodeChange"
+                message = "onPasscodeChange"
             case .simulator:
-                message = "simulator"
-                // handleSimulatorThreat()
+                message = "onSimulator"
             case .missingSecureEnclave:
-                message = "missingSecureEnclave"
+                message = "onSecureHardwareNotAvailable"
             case .deviceChange:
-                message = "deviceChange"
-                // handleDeviceBindingThreat()
+                message = "onDeviceBinding"
             case .deviceID:
-                message = "deviceID"
-                // handleDeviceIDThreat()
+                message = "onDeviceID"
             case .unofficialStore:
-                message = "unofficialStore"
+                message = "onUnofficialStore"
             case .systemVPN:
-                message = "systemVPN"
-                // handleSystemVPNThreat()
+                message = "onSystemVPN"
             case .screenshot:
-                message = "screenshot"
-                // handleScreenshotThreat()
+                message = "onScreenshot"
             case .screenRecording:
                 message = "screenRecording"
         }
@@ -55,8 +45,6 @@ extension SecurityThreatCenter: SecurityThreatHandler {
         message.withCString { messagePtr in
             send_message_to_unity(messagePtr)
         }
-        
-        
     }
 }
 

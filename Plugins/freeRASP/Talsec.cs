@@ -3,6 +3,66 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
+/*
+ * Example usage of the new struct-based Talsec initialization:
+ * 
+ * // For Android:
+ * var androidConfig = new AndroidConfig
+ * {
+ *     packageName = "com.example.app",
+ *     signingCertificateHashBase64 = new string[] { "hash1", "hash2" },
+ *     supportedAlternativeStores = new string[] { "store1", "store2" }
+ * };
+ * var commonConfig = new CommonConfig
+ * {
+ *     watcherMailAddress = "security@example.com",
+ *     isProd = true
+ * };
+ * TalsecPlugin.Instance.initTalsec(androidConfig, null, commonConfig);
+ * 
+ * // Or use the convenience method:
+ * TalsecPlugin.Instance.initTalsecAndroid(androidConfig, "security@example.com", true);
+ * 
+ * // For iOS:
+ * var iosConfig = new IOSConfig
+ * {
+ *     appBundleIds = new string[] { "com.example.app" },
+ *     appTeamId = "TEAM123"
+ * };
+ * TalsecPlugin.Instance.initTalseciOS(iosConfig, "security@example.com", true);
+ */
+
+/// <summary>
+/// Struct containing Android-specific parameters for Talsec initialization
+/// </summary>
+[System.Serializable]
+public struct AndroidConfig
+{
+    public string packageName;
+    public string[] signingCertificateHashBase64;
+    public string[] supportedAlternativeStores;
+}
+
+/// <summary>
+/// Struct containing iOS-specific parameters for Talsec initialization
+/// </summary>
+[System.Serializable]
+public struct IOSConfig
+{
+    public string[] appBundleIds;
+    public string appTeamId;
+}
+
+/// <summary>
+/// Struct containing common parameters for both platforms
+/// </summary>
+[System.Serializable]
+public struct CommonConfig
+{
+    public string watcherMailAddress;
+    public bool isProd;
+}
+
 [System.Serializable]
 public class SuspiciousAppInfo
 {
@@ -17,6 +77,10 @@ public class SuspiciousAppInfoList
     public List<SuspiciousAppInfo> items;
 }
 
+/// <summary>
+/// Unity plugin for Talsec freeRASP security SDK, providing runtime application self-protection
+/// against various threats on Android and iOS platforms.
+/// </summary>
 public class TalsecPlugin : MonoBehaviour
 {
     #if UNITY_IOS && !UNITY_EDITOR
@@ -28,10 +92,8 @@ public class TalsecPlugin : MonoBehaviour
     
     // Singleton instance
     private static TalsecPlugin _instance;
-    private AndroidThreatDetectedCallback androidCallback;
-    private IOSThreatDetectedCallback iosCallback;
+    private ThreatDetectedCallback threatDetectedCallback;
     private AndroidJavaObject javaControllerObject;
-    private AndroidJavaObject currentActivity = null;
 
     // Public accessor for the instance
     public static TalsecPlugin Instance
@@ -62,146 +124,194 @@ public class TalsecPlugin : MonoBehaviour
         }
     }
 
-    public void initAndroidTalsec(string packageName, string [] signingCertificateHashBase64, string [] supportedAlternativeStores,  string watcherMailAddress, bool isProd)
+    /// <summary>
+    /// Single point of entry for initializing Talsec SDK on both iOS and Android platforms
+    /// </summary>
+    /// <param name="androidConfig">Android-specific configuration (required for Android)</param>
+    /// <param name="iosConfig">iOS-specific configuration (required for iOS)</param>
+    /// <param name="commonConfig">Common configuration for both platforms</param>
+    public void initTalsec(AndroidConfig? androidConfig = null, IOSConfig? iosConfig = null, 
+                          CommonConfig commonConfig = default)
+    {
+        RuntimePlatform currentPlatform = Application.platform;
+        
+        if (currentPlatform == RuntimePlatform.Android)
+        {
+            // Validate Android-specific parameters
+            var android = androidConfig.Value;
+            initAndroidTalsec(android.packageName, android.signingCertificateHashBase64, android.supportedAlternativeStores, 
+                             commonConfig.watcherMailAddress, commonConfig.isProd);
+        }
+        else if (currentPlatform == RuntimePlatform.IPhonePlayer)
+        {
+            // Validate iOS-specific parameters
+            var ios = iosConfig.Value;
+            initiOSTalsec(ios.appBundleIds, ios.appTeamId, commonConfig.watcherMailAddress, commonConfig.isProd);
+        }
+        else
+        {
+            Debug.LogWarning($"Talsec initialization skipped: Platform {currentPlatform} is not supported. Only Android and iOS are supported.");
+        }
+    }
+
+    public void stopTalsec() {
+        RuntimePlatform currentPlatform = Application.platform;
+        
+        if (currentPlatform == RuntimePlatform.Android)
+        {
+            if (javaControllerObject != null)
+            {
+                javaControllerObject.Call("stopTalsec");
+            }
+        }
+    }
+
+    /// <summary>
+    /// Gets the current platform as a string for logging purposes
+    /// </summary>
+    /// <returns>Current platform name</returns>
+    private string GetCurrentPlatformName()
+    {
+        return Application.platform.ToString();
+    }
+
+    private void initAndroidTalsec(string packageName, string [] signingCertificateHashBase64, string [] supportedAlternativeStores,  string watcherMailAddress, bool isProd)
     {
         if (Application.platform == RuntimePlatform.Android)
         {
             // Get the current activity
             using (AndroidJavaClass unityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer"))
             {
-                currentActivity = unityPlayer.GetStatic<AndroidJavaObject>("currentActivity");
+                AndroidJavaObject currentActivity = unityPlayer.GetStatic<AndroidJavaObject>("currentActivity");
                 javaControllerObject = new AndroidJavaObject(ControllerName);
 
                 // Register this GameObject to receive callbacks
                 // We pass the name of this GameObject and the callback method names
                 javaControllerObject.Call("setUnityGameObjectCallback", gameObject.name);
-            }
 
-            // Call a method with parameters
-            javaControllerObject.Call("initializeTalsec", currentActivity, packageName, signingCertificateHashBase64, supportedAlternativeStores, watcherMailAddress, isProd);
-            Debug.Log("Done initializing Talsec");
+                // Call a method with parameters
+                javaControllerObject.Call("initializeTalsec", currentActivity, packageName, signingCertificateHashBase64, supportedAlternativeStores, watcherMailAddress, isProd);
+            }
         }
     }
 
-    public void initiOSTalsec(string[] appBundleIds, string appTeamId, string watcherMailAddress, bool isProd)
+    private void initiOSTalsec(string[] appBundleIds, string appTeamId, string watcherMailAddress, bool isProd)
     {
         #if UNITY_IOS && !UNITY_EDITOR
             _initTalsec(appBundleIds, appBundleIds.Length, appTeamId, watcherMailAddress, isProd);
             Debug.Log("Talsec initalized on iOS");
-        #else
-            Debug.Log("Sorry, This only works on iOS device");
         #endif
     }
 
-    public void setAndroidCallback(AndroidThreatDetectedCallback callback) {
-        this.androidCallback = callback;
-    }
-
-    public void setiOSCallback(IOSThreatDetectedCallback callback) {
-        this.iosCallback = callback;
+    public void setThreatDetectedCallback(ThreatDetectedCallback callback) {
+        this.threatDetectedCallback = callback;
     }
 
     // This method will be called from native iOS
-    public void scanResultIOS(string threatType) 
+    private void scanResultIOS(string talsecScanResultCallback) 
     {
-        if(this.iosCallback != null) {
-            switch(threatType) {
-                case "signature":
-                    this.iosCallback.signatureDetected();
-                    break;
-                case "jailbreak":
-                    this.iosCallback.jailbreakDetected();
-                    break;
-                case "debugger":
-                    this.iosCallback.debuggerDetected();
-                    break;
-                case "runtimeManipulation":
-                    this.iosCallback.runtimeManipulationDetected();
-                    break;
-                case "passcode":
-                    this.iosCallback.passcodeDetected();
-                    break;
-                case "passcodeChange":
-                    this.iosCallback.passcodeChangeDetected();
-                    break;
-                case "simulator":
-                    this.iosCallback.simulatorDetected();
-                    break;
-                case "missingSecureEnclave":
-                    this.iosCallback.missingSecureEnclaveDetected();
-                    break;
-                case "deviceChange":
-                    this.iosCallback.deviceBindingDetected();
-                    break;
-                case "deviceID":
-                    this.iosCallback.deviceIDDetected();
-                    break;
-                case "unofficialStore":
-                    this.iosCallback.unofficialStoreDetected();
-                    break;
-                case "systemVPN":
-                    this.iosCallback.systemVPNDetected();
-                    break;
-                case "screenshot":
-                    this.iosCallback.screenshotDetected();
-                    break;
-                case "screenRecording":
-                    this.iosCallback.screenRecordingDetected();
-                    break;
+        if (Application.platform == RuntimePlatform.IPhonePlayer) {
+            if(this.threatDetectedCallback != null) {
+                switch(talsecScanResultCallback) {
+                    case "onAppIntegrity":
+                        this.threatDetectedCallback.onAppIntegrity();
+                        break;
+                    case "onPrivilegedAccess":
+                        this.threatDetectedCallback.onPrivilegedAccess();
+                        break;
+                    case "onDebug":
+                        this.threatDetectedCallback.onDebug();
+                        break;
+                    case "onRuntimeManipulation":
+                        this.threatDetectedCallback.onHook();
+                        break;
+                    case "onPasscode":
+                        this.threatDetectedCallback.onPasscode();
+                        break;
+                    case "onPasscodeChange":
+                        this.threatDetectedCallback.onPasscodeChange();
+                        break;
+                    case "onSimulator":
+                        this.threatDetectedCallback.onSimulator();
+                        break;
+                    case "onSecureHardwareNotAvailable":
+                        this.threatDetectedCallback.onSecureHardwareNotAvailable();
+                        break;
+                    case "onDeviceBinding":
+                        this.threatDetectedCallback.onDeviceBinding();
+                        break;
+                    case "onDeviceID":
+                        this.threatDetectedCallback.onDeviceID();
+                        break;
+                    case "onUnofficialStore":
+                        this.threatDetectedCallback.onUnofficialStore();
+                        break;
+                    case "onSystemVPN":
+                        this.threatDetectedCallback.onSystemVPN();
+                        break;
+                    case "onScreenshot":
+                        this.threatDetectedCallback.onScreenshot();
+                        break;
+                    case "onScreenRecording":
+                        this.threatDetectedCallback.onScreenRecording();
+                        break;
+                }
             }
         }
     }
 
-    // this method is called by the java side module
-    public void scanResultAndroid(string talsecScanResultCallbackName) {
+    // this method is called by the Android Java module
+    private void scanResultAndroid(string talsecScanResultCallback) {
         if (Application.platform == RuntimePlatform.Android)
         {
-            switch(talsecScanResultCallbackName) {
-                case "onRootDetected":
-                    this.androidCallback.onRootDetected();
-                    break;
-                case "onTamperDetected":
-                    this.androidCallback.onTamperDetected();
-                    break;
-                case "onDebuggerDetected":
-                    this.androidCallback.onDebuggerDetected();
-                    break;
-                case "onEmulatorDetected":
-                    this.androidCallback.onEmulatorDetected();
-                    break;
-                case "onObfuscationIssuesDetected":
-                    this.androidCallback.onObfuscationIssuesDetected();
-                    break;
-                case "onScreenshotDetected":
-                    this.androidCallback.onScreenshotDetected();
-                    break;
-                case "onScreenRecordingDetected":
-                    this.androidCallback.onScreenRecordingDetected();
-                    break;
-                case "onUntrustedInstallationSourceDetected":
-                    this.androidCallback.onUntrustedInstallationSourceDetected();
-                    break;
-                case "onHookDetected":
-                    this.androidCallback.onHookDetected();
-                    break;
-                case "onDeviceBindingDetected":
-                    this.androidCallback.onDeviceBindingDetected();
-                    break;
-                case "onUnlockedDeviceDetected":
-                    this.androidCallback.onUnlockedDeviceDetected();
-                    break;
-                case "onHardwareBackedKeystoreNotAvailableDetected":
-                    this.androidCallback.onHardwareBackedKeystoreNotAvailableDetected();
-                    break;
-                case "onDeveloperModeDetected": 
-                    this.androidCallback.onDeveloperModeDetected();
-                    break;
-                case "onADBEnabledDetected":
-                    this.androidCallback.onADBEnabledDetected();
-                    break;
-                case "onSystemVPNDetected":
-                    this.androidCallback.onSystemVPNDetected();
-                    break;
+            if(this.threatDetectedCallback != null) {
+                switch(talsecScanResultCallback) {
+                    case "onPrivilegedAccess":
+                        this.threatDetectedCallback.onPrivilegedAccess();
+                        break;
+                    case "onAppIntegrity":
+                        this.threatDetectedCallback.onAppIntegrity();
+                        break;
+                    case "onDebug":
+                        this.threatDetectedCallback.onDebug();
+                        break;
+                    case "onSimulator":
+                        this.threatDetectedCallback.onSimulator();
+                        break;
+                    case "onObfuscationIssues":
+                        this.threatDetectedCallback.onObfuscationIssues();
+                        break;
+                    case "onScreenshot":
+                        this.threatDetectedCallback.onScreenshot();
+                        break;
+                    case "onScreenRecording":
+                        this.threatDetectedCallback.onScreenRecording();
+                        break;
+                    case "onUnofficialStore":
+                        this.threatDetectedCallback.onUnofficialStore();
+                        break;
+                    case "onHook":
+                        this.threatDetectedCallback.onHook();
+                        break;
+                    case "onDeviceBinding":
+                        this.threatDetectedCallback.onDeviceBinding();
+                        break;
+                    case "onPasscode":
+                        this.threatDetectedCallback.onPasscode();
+                        break;
+                    case "onSecureHardwareNotAvailable":
+                        this.threatDetectedCallback.onSecureHardwareNotAvailable();
+                        break;
+                    case "onDevMode": 
+                        this.threatDetectedCallback.onDevMode();
+                        break;
+                    case "onADBEnabled":
+                        this.threatDetectedCallback.onADBEnabled();
+                        break;
+                    case "onSystemVPN":
+                        this.threatDetectedCallback.onSystemVPN();
+                        break;
+                }
             }
         }
     }
