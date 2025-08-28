@@ -49,16 +49,6 @@ public class Game : MonoBehaviour, ThreatDetectedCallback
         TalsecPlugin.Instance.initTalsec(androidConfig, iosConfig, commonConfig);
     }
 
-    // OnDestroy is called when the GameObject is being destroyed
-    void OnDestroy()
-    {
-        Debug.Log("Game - OnDestroy called");
-        // Clean up any resources, unsubscribe from events, etc.
-        // This is the proper Unity lifecycle method for cleanup
-        TalsecPlugin.Instance.setThreatDetectedCallback(null);
-        TalsecPlugin.Instance.stopTalsec();
-    }
-
     // Implementation of ThreatDetectedCallback interface
     public void onPrivilegedAccess()
     {
