@@ -27,38 +27,23 @@ public class Game : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        // common configs
-        bool isProd = true;
-        string watcherMailAddress = "security@example.com";
-
-        // Android related configs
-        string expectedPackageName = "com.unity.freeRASP";
-        string[] expectedSigningCertificateHashBase64 = new string[] { "Tmac/QIomCqEGS1jYqy9cMMrqaitVoZLpjXzCMnt55Q=" };
-        string[] blacklistedPackageNames = new string[] { "com.spotify.music", "com.leavjenn.hews2" };
-        string[] supportedAlternativeStores = new string[] { "com.sec.android.app.samsungapps" };
-        
-        var androidConfig = new AndroidConfig
+        // Create unified TalsecConfig with all settings
+        var config = new TalsecConfig
         {
-            packageName = expectedPackageName,
-            signingCertificateHashBase64 = expectedSigningCertificateHashBase64,
-            supportedAlternativeStores = supportedAlternativeStores
-        };
-
-        var commonConfig = new CommonConfig
-        {
-            watcherMailAddress = watcherMailAddress,
-            isProd = isProd
+            watcherMailAddress = "security@example.com",
+            isProd = true,
+            androidConfig = new AndroidConfig
+            {
+                packageName = "com.unity.freeRASP",
+                signingCertificateHashBase64 = new string[] { "Tmac/QIomCqEGS1jYqy9cMMrqaitVoZLpjXzCMnt55Q=" },
+                supportedAlternativeStores = new string[] { "com.sec.android.app.samsungapps" }
+            }
         };
         
         // set callback
         TalsecPlugin.Instance.setThreatDetectedCallback(this); 
-        // initialize talsec
-        TalsecPlugin.Instance.initTalsec(androidConfig, null, commonConfig);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
+        // initialize talsec with new unified config
+        TalsecPlugin.Instance.initTalsec(config);
     }
 }
 ```
@@ -105,7 +90,7 @@ public void onUnofficialStore() {
     Debug.Log("Unity - Untrusted installation source detected");
 }
 
-public void onHook() {
+public void onHooks() {
     Debug.Log("Unity - Hook detected");
 }
 
@@ -140,7 +125,6 @@ public void onADBEnabled() {
 public void onSystemVPN() {
     Debug.Log("Unity - System VPN detected");
 }
-
 ```
 
 ## Add freeRASP Maven Repository 
@@ -185,31 +169,22 @@ public class IOSGame : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        // common configs
-        bool isProd = true;
-        string watcherMailAddress = "security@example.com";
-
-        // iOS related configs
-        string[] appBundleIds = new string[] { "com.unity.freeRASP" };
-        string teamId = "TEAM ID";
-        
-        // Create iOS config struct
-        var iosConfig = new IOSConfig
+        // Create unified TalsecConfig with all settings
+        var config = new TalsecConfig
         {
-            appBundleIds = appBundleIds,
-            appTeamId = teamId
-        };
-
-        var commonConfig = new CommonConfig
-        {
-            watcherMailAddress = watcherMailAddress,
-            isProd = isProd
+            watcherMailAddress = "security@example.com",
+            isProd = true,
+            iosConfig = new IOSConfig
+            {
+                appBundleIds = new string[] { "com.unity.freeRASP" },
+                appTeamId = "TEAM ID"
+            }
         };
         
         // set callback
         TalsecPlugin.Instance.setThreatDetectedCallback(this); 
-        // initialize talsec
-        TalsecPlugin.Instance.initTalsec(null, iosConfig, commonConfig);
+        // initialize talsec with new unified config
+        TalsecPlugin.Instance.initTalsec(config);
     }
 }
 ```
@@ -218,6 +193,7 @@ public class IOSGame : MonoBehaviour
 Inorder to receive threat notifications, you have to implement the callback IOSThreatDetectedCallback. This has multiple methods that are triggered when freeRASP periodically checks the device for security threats. Implement these methods inside your Game 
 
 ```csharp
+// Implementation of ThreatDetectedCallback interface
 // Implementation of ThreatDetectedCallback interface
 public void onPrivilegedAccess()
 {
@@ -257,7 +233,7 @@ public void onUnofficialStore() {
     Debug.Log("Unity - Untrusted installation source detected");
 }
 
-public void onHook() {
+public void onHooks() {
     Debug.Log("Unity - Hook detected");
 }
 
@@ -293,7 +269,6 @@ public void onSystemVPN() {
     Debug.Log("Unity - System VPN detected");
 }
 ```
-
 
 ## Add freeRASP
 Once you are done with your game in Unity Hub; proceed to export the project. Once exported, open up the project in Xcode and add freeRASP dependency 

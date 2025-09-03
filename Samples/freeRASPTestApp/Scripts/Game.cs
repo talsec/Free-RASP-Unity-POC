@@ -8,45 +8,23 @@ public class Game : MonoBehaviour, ThreatDetectedCallback
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        // common configs
-        bool isProd = true;
-        string watcherMailAddress = "security@example.com";
-
-        // Android related configs
-        string expectedPackageName = "com.unity.freeRASP";
-        string[] expectedSigningCertificateHashBase64 = new string[] { "Tmac/QIomCqEGS1jYqy9cMMrqaitVoZLpjXzCMnt55Q=" };
-        string[] blacklistedPackageNames = new string[] { "com.spotify.music", "com.leavjenn.hews2" };
-        string[] supportedAlternativeStores = new string[] { "com.sec.android.app.samsungapps" };
-
-        // iOS related configs
-        string[] appBundleIds = new string[] { "com.unity.freeRASP" };
-        string teamId = "TEAM ID";
-
-        
-        var androidConfig = new AndroidConfig
+        // Create unified TalsecConfig with all settings
+        var config = new TalsecConfig
         {
-            packageName = expectedPackageName,
-            signingCertificateHashBase64 = expectedSigningCertificateHashBase64,
-            supportedAlternativeStores = supportedAlternativeStores
-        };
-        
-        // Create iOS config struct
-        var iosConfig = new IOSConfig
-        {
-            appBundleIds = appBundleIds,
-            appTeamId = teamId
-        };
-
-        var commonConfig = new CommonConfig
-        {
-            watcherMailAddress = watcherMailAddress,
-            isProd = isProd
+            watcherMailAddress = "security@example.com",
+            isProd = true,
+            androidConfig = new AndroidConfig
+            {
+                packageName = "com.unity.freeRASP",
+                signingCertificateHashBase64 = new string[] { "Tmac/QIomCqEGS1jYqy9cMMrqaitVoZLpjXzCMnt55Q=" },
+                supportedAlternativeStores = new string[] { "com.sec.android.app.samsungapps" }
+            }
         };
         
         // set callback
         TalsecPlugin.Instance.setThreatDetectedCallback(this); 
-        // initialize talsec
-        TalsecPlugin.Instance.initTalsec(androidConfig, iosConfig, commonConfig);
+        // initialize talsec with new unified config
+        TalsecPlugin.Instance.initTalsec(config);
     }
 
     // Implementation of ThreatDetectedCallback interface
@@ -88,7 +66,7 @@ public class Game : MonoBehaviour, ThreatDetectedCallback
         Debug.Log("Unity - Untrusted installation source detected");
     }
 
-    public void onHook() {
+    public void onHooks() {
         Debug.Log("Unity - Hook detected");
     }
 

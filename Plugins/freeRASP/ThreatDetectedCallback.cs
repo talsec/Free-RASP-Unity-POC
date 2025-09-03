@@ -11,7 +11,7 @@ public interface ThreatDetectedCallback
     void onDeviceBinding();
     void onSimulator();
     void onUnofficialStore();
-    void onHook();
+    void onHooks();
     void onObfuscationIssues();
     void onScreenshot();
     void onScreenRecording();

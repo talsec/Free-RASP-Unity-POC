@@ -5,6 +5,6 @@ extern "C" {
     
     // C function for Swift to call
     void send_message_to_unity(const char* threatType) {
-        UnitySendMessage("TalsecPlugin", "scanResultIOS", threatType);
+        UnitySendMessage("TalsecPlugin", "scanResult", threatType);
     }
 }
