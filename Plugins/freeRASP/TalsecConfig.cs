@@ -42,7 +42,7 @@ public class TalsecConfig
     /// </summary>
     public TalsecConfig()
     {
-        isProd = false;
+        isProd = true;
         watcherMailAddress = null;
         androidConfig = new AndroidConfig();
         iosConfig = new IOSConfig();
