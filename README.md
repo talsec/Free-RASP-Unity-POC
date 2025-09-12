@@ -27,24 +27,23 @@ public class Game : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        bool isProd = true;
-        string watcherMailAddress = "your_mail@example.com";
-
-        // Android related configs
-        string expectedPackageName = "com.unity.rasp.game";
-        string[] expectedSigningCertificateHashBase64 = new string[] { "Tmac/QIomCqEGS1jYqy9cMMrqaitVoZLpjXzCMnt55Q=" };
-        string[] blacklistedPackageNames = new string[] { "com.spotify.music"};
-        string[] supportedAlternativeStores = new string[] { "com.sec.android.app.samsungapps" };
-
-        // initialize talsec
-        TalsecPlugin.Instance.setAndroidCallback(this); // set Android callback
-        TalsecPlugin.Instance.initAndroidTalsec(expectedPackageName, expectedSigningCertificateHashBase64,
-        blacklistedPackageNames, supportedAlternativeStores, watcherMailAddress, isProd);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
+        // Create unified TalsecConfig with all settings
+        var config = new TalsecConfig
+        {
+            watcherMailAddress = "security@example.com",
+            isProd = true,
+            androidConfig = new AndroidConfig
+            {
+                packageName = "com.unity.freeRASP",
+                signingCertificateHashBase64 = new string[] { "Tmac/QIomCqEGS1jYqy9cMMrqaitVoZLpjXzCMnt55Q=" },
+                supportedAlternativeStores = new string[] { "com.sec.android.app.samsungapps" }
+            }
+        };
+        
+        // set callback
+        TalsecPlugin.Instance.setThreatDetectedCallback(this); 
+        // initialize talsec with new unified config
+        TalsecPlugin.Instance.initTalsec(config);
     }
 }
 ```
@@ -52,73 +51,80 @@ public class Game : MonoBehaviour
 Inorder to receive threat notifications, you have to implement the callback AndroidThreatDetectedCallback. This has multiple methods that are triggered when freeRASP periodically checks the device for security threats. Implement these methods inside your Game 
 
 ```csharp
-// Implementation of AndroidThreatDetectedCallback interface
-public void onRootDetected()
+// Implementation of ThreatDetectedCallback interface
+public void onPrivilegedAccess()
 {
     Debug.Log("Unity - Root detected");
 }
 
-public void onTamperDetected()
+public void onAppIntegrity()
 {
     Debug.Log("Unity - Tamper detected");
 }
 
-public void onDebuggerDetected()
+public void onDebug()
 {
     Debug.Log("Unity - Debugger detected");
 }
 
-public void onEmulatorDetected()
+public void onSimulator()
 {
     Debug.Log("Unity - Emulator detected");
 }
 
-public void onObfuscationIssuesDetected()
+public void onObfuscationIssues()
 {
     Debug.Log("Unity - Obfuscation issues detected");
 }
-public void onScreenshotDetected()
+public void onScreenshot()
 {
     Debug.Log("Unity - Screenshot detected");
 }
 
-public void onScreenRecordingDetected()
+public void onScreenRecording()
 {
     Debug.Log("Unity - Screen recording detected");
 }
 
-public void onUntrustedInstallationSourceDetected() {
+public void onUnofficialStore() {
     Debug.Log("Unity - Untrusted installation source detected");
 }
 
-public void onHookDetected() {
+public void onHooks() {
     Debug.Log("Unity - Hook detected");
 }
 
-public void onDeviceBindingDetected() {
+public void onDeviceBinding() {
     Debug.Log("Unity - Device binding detected");
 }
 
-public void onUnlockedDeviceDetected() {
+public void onPasscode() {
     Debug.Log("Unity - Unlocked device detected");
 }
 
-public void onHardwareBackedKeystoreNotAvailableDetected() {
+public void onPasscodeChange() {
+    Debug.Log("Unity - Passcode change detected");
+}
+
+public void onDeviceID() {
+    Debug.Log("Unity - Device ID detected");
+}
+
+public void onSecureHardwareNotAvailable() {
     Debug.Log("Unity - Hardware backed keystore not available detected");
 }
 
-public void onDeveloperModeDetected() {
+public void onDevMode() {
     Debug.Log("Unity - Developer mode detected");
 }
 
-public void onADBEnabledDetected() {
+public void onADBEnabled() {
     Debug.Log("Unity - ADB enabled detected");
 }
 
-public void onSystemVPNDetected() {
+public void onSystemVPN() {
     Debug.Log("Unity - System VPN detected");
 }
-
 ```
 
 ## Add freeRASP Maven Repository 
@@ -163,19 +169,23 @@ public class IOSGame : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        // common configs
-        bool isProd = true;
-        string watcherMailAddress = "your_mail@example.com";
-
-        // iOS related configs
-        string[] appBundleIds = new string[] { "com.unity.freeRASP" };
-        string teamId = "TEAM ID";
-
-        // initialize talsec
-        TalsecPlugin.Instance.setiOSCallback(this); // set callback
-        TalsecPlugin.Instance.initiOSTalsec(appBundleIds, teamId, watcherMailAddress, isProd);
+        // Create unified TalsecConfig with all settings
+        var config = new TalsecConfig
+        {
+            watcherMailAddress = "security@example.com",
+            isProd = true,
+            iosConfig = new IOSConfig
+            {
+                appBundleIds = new string[] { "com.unity.freeRASP" },
+                appTeamId = "TEAM ID"
+            }
+        };
+        
+        // set callback
+        TalsecPlugin.Instance.setThreatDetectedCallback(this); 
+        // initialize talsec with new unified config
+        TalsecPlugin.Instance.initTalsec(config);
     }
-
 }
 ```
 
@@ -183,64 +193,82 @@ public class IOSGame : MonoBehaviour
 Inorder to receive threat notifications, you have to implement the callback IOSThreatDetectedCallback. This has multiple methods that are triggered when freeRASP periodically checks the device for security threats. Implement these methods inside your Game 
 
 ```csharp
-// Implementation of IOSThreatDetectedCallback interface
-public void signatureDetected() {
-    Debug.Log("Unity - Signature detected");
+// Implementation of ThreatDetectedCallback interface
+// Implementation of ThreatDetectedCallback interface
+public void onPrivilegedAccess()
+{
+    Debug.Log("Unity - Root detected");
 }
 
-public void jailbreakDetected() {
-    Debug.Log("Unity - Jailbreak detected");
+public void onAppIntegrity()
+{
+    Debug.Log("Unity - Tamper detected");
 }
 
-public void debuggerDetected() {
+public void onDebug()
+{
     Debug.Log("Unity - Debugger detected");
 }
 
-public void runtimeManipulationDetected() {
-    Debug.Log("Unity - Runtime manipulation detected");
+public void onSimulator()
+{
+    Debug.Log("Unity - Emulator detected");
 }
 
-public void passcodeDetected() {
-    Debug.Log("Unity - Passcode detected");
+public void onObfuscationIssues()
+{
+    Debug.Log("Unity - Obfuscation issues detected");
 }
-
-public void passcodeChangeDetected() {
-    Debug.Log("Unity - Passcode change detected");
-}
-
-public void simulatorDetected() {
-    Debug.Log("Unity - Simulator detected");
-}
-
-public void missingSecureEnclaveDetected() {
-    Debug.Log("Unity - Missing secure enclave detected");
-}
-
-public void deviceBindingDetected() {
-    Debug.Log("Unity - Device binding detected");
-}
-
-public void unofficialStoreDetected() {
-    Debug.Log("Unity - Unofficial store detected");
-}
-
-public void systemVPNDetected() {
-    Debug.Log("Unity - System VPN detected");
-}
-
-public void screenshotDetected() {
+public void onScreenshot()
+{
     Debug.Log("Unity - Screenshot detected");
 }
 
-public void screenRecordingDetected() {
+public void onScreenRecording()
+{
     Debug.Log("Unity - Screen recording detected");
 }
 
-public void deviceIDDetected() {
+public void onUnofficialStore() {
+    Debug.Log("Unity - Untrusted installation source detected");
+}
+
+public void onHooks() {
+    Debug.Log("Unity - Hook detected");
+}
+
+public void onDeviceBinding() {
+    Debug.Log("Unity - Device binding detected");
+}
+
+public void onPasscode() {
+    Debug.Log("Unity - Unlocked device detected");
+}
+
+public void onPasscodeChange() {
+    Debug.Log("Unity - Passcode change detected");
+}
+
+public void onDeviceID() {
     Debug.Log("Unity - Device ID detected");
 }
-```
 
+public void onSecureHardwareNotAvailable() {
+    Debug.Log("Unity - Hardware backed keystore not available detected");
+}
+
+public void onDevMode() {
+    Debug.Log("Unity - Developer mode detected");
+}
+
+public void onADBEnabled() {
+    Debug.Log("Unity - ADB enabled detected");
+}
+
+public void onSystemVPN() {
+    Debug.Log("Unity - System VPN detected");
+}
+```
 
 ## Add freeRASP
 Once you are done with your game in Unity Hub; proceed to export the project. Once exported, open up the project in Xcode and add freeRASP dependency 
