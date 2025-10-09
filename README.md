@@ -1,282 +1,74 @@
-# Android 
-## Prerequisites
+<h1>
+<img src="https://raw.githubusercontent.com/talsec/Free-RASP-Community/master/visuals/freeRASP.png" alt="RASP for Unity" width=100%>
+</h1>
 
-- Unity 6 and above
-- Min SDK level 23 
+![GitHub Repo stars](https://img.shields.io/github/stars/talsec/Free-RASP-Community?color=green) ![GitHub](https://img.shields.io/github/license/talsec/Free-RASP-Community) ![GitHub last commit](https://img.shields.io/github/last-commit/talsec/Free-RASP-Unity-POC) ![Publisher](https://img.shields.io/pub/publisher/freerasp) [![42matters](https://42matters.com/badges/sdk-installations/talsec)](https://42matters.com/sdks/android/talsec)
 
-## Install Plugin
-First you will need to install freeRASP for unity. Head over to [Github Unity Plugin Release Link](https://github.com/talsec/Free-RASP-Unity-POC/releases/latest/download/freeRASP.unitypackage). Download the latest plugin. Notice the plugin file ends with .unitypackage
-
-Proceed to import the plugin into your unity project. Right click on Assets -> Import Package -> Custom Package 
-
-![Import freeRASP Package](screenshots/import-package.png)
-
-## Setup the Configuration for your App
-For freeRASP to work properly, you need to configure and initialize it with all the necessary settings. These values need to be completed for the plugin to function correctly. You can find detailed explanations of each configuration option on the API documentation page.
-
-The first step involves obtaining your app's signing certificate hashes in Base64 format. Refer to the provided manual for comprehensive guidance on app signing, which covers both manual signing methods and Google Play's app signing service.
-
-In the entry point to your app, import freeRASP and add the following code:
+[<img src="https://assets.42matters.com/badges/2024/04/rising-star.svg?m=04" width="100"/>](https://42matters.com/sdks/android/talsec)
 
 
-```csharp 
-using UnityEngine;
+# FreeRASP Plugin for Unity
 
-public class Game : MonoBehaviour
-{
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        // Create unified TalsecConfig with all settings
-        var config = new TalsecConfig
-        {
-            watcherMailAddress = "security@example.com",
-            isProd = true,
-            androidConfig = new AndroidConfig
-            {
-                packageName = "com.unity.freeRASP",
-                signingCertificateHashBase64 = new string[] { "Tmac/QIomCqEGS1jYqy9cMMrqaitVoZLpjXzCMnt55Q=" },
-                supportedAlternativeStores = new string[] { "com.sec.android.app.samsungapps" }
-            }
-        };
-        
-        // set callback
-        TalsecPlugin.Instance.setThreatDetectedCallback(this); 
-        // initialize talsec with new unified config
-        TalsecPlugin.Instance.initTalsec(config);
-    }
-}
-```
-## Handle detected threats 
-Inorder to receive threat notifications, you have to implement the callback AndroidThreatDetectedCallback. This has multiple methods that are triggered when freeRASP periodically checks the device for security threats. Implement these methods inside your Game 
+freeRASP SDK is RASP for Unity providing a mobile in-app protection and security monitoring. It aims to cover the main aspects of Runtime App Self Protection and application shielding.
 
-```csharp
-// Implementation of ThreatDetectedCallback interface
-public void onPrivilegedAccess()
-{
-    Debug.Log("Unity - Root detected");
-}
+:loudspeaker: [The official documentation has been moved to a new location. You can now find it here](https://docs.talsec.app/docs-and-articles-portal?utm_source=github). :loudspeaker:
 
-public void onAppIntegrity()
-{
-    Debug.Log("Unity - Tamper detected");
-}
+# Overview
 
-public void onDebug()
-{
-    Debug.Log("Unity - Debugger detected");
-}
+The freeRASP is available for Flutter, Cordova, Capacitor, React Native, Android, Unity, Unreal Engine and iOS developers. We encourage community contributions, investigations of attack cases, joint data research, and other activities aiming to make better app security and app safety for end-users.
 
-public void onSimulator()
-{
-    Debug.Log("Unity - Emulator detected");
-}
+freeRASP SDK is designed to combat
 
-public void onObfuscationIssues()
-{
-    Debug.Log("Unity - Obfuscation issues detected");
-}
-public void onScreenshot()
-{
-    Debug.Log("Unity - Screenshot detected");
-}
+* Reverse engineering attempts
+* Re-publishing or tampering with the apps
+* Running application in a compromised OS environment
+* Malware, fraudsters, and cybercriminal activities
 
-public void onScreenRecording()
-{
-    Debug.Log("Unity - Screen recording detected");
-}
+Key features are the detection and prevention of
 
-public void onUnofficialStore() {
-    Debug.Log("Unity - Untrusted installation source detected");
-}
+* Root/Jailbreak (e.g., su, Magisk, unc0ver, check1rain, Dopamine)
+* Hooking framework (e.g., Frida, Shadow)
+* Untrusted installation method
+* App/Device (un)binding
 
-public void onHooks() {
-    Debug.Log("Unity - Hook detected");
-}
+Additional freeRASP features include low latency, easy integration and a weekly [Security Report](https://docs.talsec.app/freerasp/security-report?utm_source=github) containing detailed information about detected incidents and potential threats, summarizing the state of your app security.
 
-public void onDeviceBinding() {
-    Debug.Log("Unity - Device binding detected");
-}
+The commercial version provides a top-notch protection level, extra features, support and maintenance. One of the most valued commercial features is AppiCrypt® - App Integrity Cryptogram.
 
-public void onPasscode() {
-    Debug.Log("Unity - Unlocked device detected");
-}
+It allows easy to implement API protection and App Integrity verification on the backend to prevent API abuse:
 
-public void onPasscodeChange() {
-    Debug.Log("Unity - Passcode change detected");
-}
+* Bruteforce attacks
+* Botnets
+* Session-hijacking
+* DDoS
 
-public void onDeviceID() {
-    Debug.Log("Unity - Device ID detected");
-}
+It is a unified solution that works across all mobile platforms without dependency on external web services (i.e., without extra latency, an additional point of failure, and maintenance costs).
 
-public void onSecureHardwareNotAvailable() {
-    Debug.Log("Unity - Hardware backed keystore not available detected");
-}
+Learn more about commercial features at [https://talsec.app](https://talsec.app?utm_source=github).
 
-public void onDevMode() {
-    Debug.Log("Unity - Developer mode detected");
-}
+Learn more about freemium freeRASP features at [GitHub main repository](https://github.com/talsec/Free-RASP-Community).
 
-public void onADBEnabled() {
-    Debug.Log("Unity - ADB enabled detected");
-}
+# :book: Discover the Official freeRASP Documentation
+Visit the [GitBook page](https://docs.talsec.app/freerasp?utm_source=github) for comprehensive and up-to-date guides, tutorials, and technical documentation specifically for freeRASP. It serves as your go-to resource, offering everything from basic instructions to advanced tips and tricks to help you get the most out of the project.
 
-public void onSystemVPN() {
-    Debug.Log("Unity - System VPN detected");
-}
-```
+:loudspeaker: [The official documentation has been moved to a new location. You can now find it here](https://docs.talsec.app/docs-and-articles-portal?utm_source=github). :loudspeaker:
 
-## Add freeRASP Maven Repository 
-Once you are done with your game in Unity Hub; proceed to export the project. Once exported, open up the project in Android Studio and add freeRASP’s maven repository address into your `settings.gradle` file. 
+## :link: Integration Guide
+For integrating freeRASP on the Unity platform, be sure to follow all the steps in the [Integration Guide](https://docs.talsec.app/freerasp/integration?utm_source=github). This guide provides detailed instructions to help you achieve a smooth and efficient integration.
 
-```gradle
-repositories {
-    google()
-    mavenCentral()
-    maven { url = uri("https://jitpack.io") }
-    maven { url = uri("https://europe-west3-maven.pkg.dev/talsec-artifact-repository/freerasp") }
-}
-```
-![Import freeRASP Package](screenshots/maven-repo-android.png)
+Be sure to bookmark it and stay informed! :books: :sparkles:.
 
-# iOS 
+# :rocket: What's New and Changelog
+Stay informed and make the most of freeRASP by checking out [What's New and Changelog](https://docs.talsec.app/freerasp/whats-new-and-changelog?utm_source=github)! Here, you’ll discover the latest features, enhancements, and bug fixes we’ve implemented to improve your experience across all platforms, including Android, iOS, Flutter, React Native, Capacitor, Unity, Unreal Engine and Cordova.
 
-## Prerequisites
+Don’t miss out on any updates and explore the changelog to see how we’re continually making freeRASP better for you!
 
-- Unity 6 and above
+# :sparkles: Enhancements
 
-## Install Plugin
-First you will need to install freeRASP for unity. Head over to [Github Unity Plugin Release Link](https://github.com/talsec/Free-RASP-Unity-POC/releases/latest/download/freeRASP.unitypackage). Download the latest plugin. Notice the plugin file ends with .unitypackage
+If you have any ideas for improvements, feel free to [raise an issue](https://github.com/talsec/Free-RASP-Unity-POC/issues) and mark it with an **enhancement** label. We track these enhancements using [GitHub Projects](https://docs.github.com/en/issues/planning-and-tracking-with-projects/learning-about-projects/about-projects) to keep tasks organized and connected to relevant issues or pull requests.
 
-Proceed to import the plugin into your unity project. Right click on Assets -> Import Package -> Custom Package 
+You can check out the project board [here](https://github.com/orgs/talsec/projects/2).
 
-![Import freeRASP Package](screenshots/import-package.png)
+# :page_facing_up: License
 
-## Setup the Configuration for your App
-For freeRASP to work properly, you need to configure and initialize it with all the necessary settings. These values need to be completed for the plugin to function correctly. You can find detailed explanations of each configuration option on the API documentation page.
-
-In the entry point to your app, import freeRASP and add the following code:
-
-```csharp
-using System;
-using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
-
-public class IOSGame : MonoBehaviour
-{
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        // Create unified TalsecConfig with all settings
-        var config = new TalsecConfig
-        {
-            watcherMailAddress = "security@example.com",
-            isProd = true,
-            iosConfig = new IOSConfig
-            {
-                appBundleIds = new string[] { "com.unity.freeRASP" },
-                appTeamId = "TEAM ID"
-            }
-        };
-        
-        // set callback
-        TalsecPlugin.Instance.setThreatDetectedCallback(this); 
-        // initialize talsec with new unified config
-        TalsecPlugin.Instance.initTalsec(config);
-    }
-}
-```
-
-## Handle detected threats 
-Inorder to receive threat notifications, you have to implement the callback IOSThreatDetectedCallback. This has multiple methods that are triggered when freeRASP periodically checks the device for security threats. Implement these methods inside your Game 
-
-```csharp
-// Implementation of ThreatDetectedCallback interface
-// Implementation of ThreatDetectedCallback interface
-public void onPrivilegedAccess()
-{
-    Debug.Log("Unity - Root detected");
-}
-
-public void onAppIntegrity()
-{
-    Debug.Log("Unity - Tamper detected");
-}
-
-public void onDebug()
-{
-    Debug.Log("Unity - Debugger detected");
-}
-
-public void onSimulator()
-{
-    Debug.Log("Unity - Emulator detected");
-}
-
-public void onObfuscationIssues()
-{
-    Debug.Log("Unity - Obfuscation issues detected");
-}
-public void onScreenshot()
-{
-    Debug.Log("Unity - Screenshot detected");
-}
-
-public void onScreenRecording()
-{
-    Debug.Log("Unity - Screen recording detected");
-}
-
-public void onUnofficialStore() {
-    Debug.Log("Unity - Untrusted installation source detected");
-}
-
-public void onHooks() {
-    Debug.Log("Unity - Hook detected");
-}
-
-public void onDeviceBinding() {
-    Debug.Log("Unity - Device binding detected");
-}
-
-public void onPasscode() {
-    Debug.Log("Unity - Unlocked device detected");
-}
-
-public void onPasscodeChange() {
-    Debug.Log("Unity - Passcode change detected");
-}
-
-public void onDeviceID() {
-    Debug.Log("Unity - Device ID detected");
-}
-
-public void onSecureHardwareNotAvailable() {
-    Debug.Log("Unity - Hardware backed keystore not available detected");
-}
-
-public void onDevMode() {
-    Debug.Log("Unity - Developer mode detected");
-}
-
-public void onADBEnabled() {
-    Debug.Log("Unity - ADB enabled detected");
-}
-
-public void onSystemVPN() {
-    Debug.Log("Unity - System VPN detected");
-}
-```
-
-## Add freeRASP
-Once you are done with your game in Unity Hub; proceed to export the project. Once exported, open up the project in Xcode and add freeRASP dependency 
-
-From GitHub, Copy [Talsec folder](https://github.com/talsec/Free-RASP-iOS/tree/master/Talsec) into your Application folder.
-Drag & drop the Talsec folder to your .xcworkspace.
-Add TalsecRuntime framework to Target > Build Phases > Link Binary With Libraries.
-In the General > Frameworks, Libraries, and Embedded Content choose Embed & Sign.
-
-Note: In case you are using Carthage, the zipped version of the framework is included in the GitHub Releases.
-
+This project is provided as freemium software, i.e. there is a [fair usage policy](https://docs.talsec.app/freerasp/features-and-pricing-plans#plans-comparison?utm_source=github) that imposes some limitations on the free usage. The SDK software consists of open-source and binary parts, which is the property of Talsec. The open-source part is licensed under the MIT License - see the LICENSE file for details.
