@@ -126,5 +126,25 @@ public class Controller implements ThreatListener.ThreatDetected, ThreatListener
     @Override
     public void onSystemVPNDetected() {
         UnityPlayer.UnitySendMessage(this.gameObjectName, "scanResult", "onSystemVPN");
-    }       
+    }      
+    
+    @Override
+    public void onMultiInstanceDetected() {
+        UnityPlayer.UnitySendMessage(this.gameObjectName, "scanResult", "onMultiInstance");
+    }
+
+    @Override
+    public void onUnsecureWifiDetected() {
+        UnityPlayer.UnitySendMessage(this.gameObjectName, "scanResult", "onUnsecureWiFi");
+    }
+
+    @Override
+    public void onTimeSpoofingDetected() {
+        UnityPlayer.UnitySendMessage(this.gameObjectName, "scanResult", "onTimeSpoofing");
+    }
+
+    @Override
+    public void onLocationSpoofingDetected() {
+        UnityPlayer.UnitySendMessage(this.gameObjectName, "scanResult", "onLocationSpoofing");
+    }
 }

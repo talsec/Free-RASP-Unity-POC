@@ -102,4 +102,20 @@ public class Game : MonoBehaviour, ThreatDetectedCallback
         Debug.Log("Unity - System VPN detected");
     }
 
+    public void onMultiInstance() {
+        Debug.Log("Unity - Multi instance detected");
+    }
+
+    public void onUnsecureWiFi() {
+        Debug.Log("Unity - Unsecure WiFi detected");
+    }
+
+    public void onTimeSpoofing() {
+        Debug.Log("Unity - Time spoofing detected");
+    }
+
+    public void onLocationSpoofing() {
+        Debug.Log("Unity - Location spoofing detected");
+    }
+
 }

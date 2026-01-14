@@ -178,6 +178,18 @@ public class TalsecPlugin : MonoBehaviour
                     case "onADBEnabled":
                         this.threatDetectedCallback.onADBEnabled();
                         break;
+                    case "onMultiInstance":
+                        this.threatDetectedCallback.onMultiInstance();
+                        break;
+                    case "onUnsecureWiFi":
+                        this.threatDetectedCallback.onUnsecureWiFi();
+                        break;
+                    case "onTimeSpoofing":
+                        this.threatDetectedCallback.onTimeSpoofing();
+                        break;
+                    case "onLocationSpoofing":
+                        this.threatDetectedCallback.onLocationSpoofing();
+                        break;
                 }
             }
     }
