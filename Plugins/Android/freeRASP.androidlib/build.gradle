@@ -33,7 +33,7 @@ android {
 dependencies {
     compileOnly files('libs/unity-classes.jar')
     // freeRASP SDK  
-    implementation 'com.aheaditec.talsec.security:TalsecSecurity-Community-Unity:17.0.0'
+    implementation 'com.aheaditec.talsec.security:TalsecSecurity-Community-Unity:17.0.1'
     // test dep
     implementation("com.google.code.gson:gson:2.13.1")
 }
