@@ -21,4 +21,8 @@ public interface ThreatDetectedCallback
     void onDevMode();
     void onADBEnabled();
     void onSystemVPN();
+    void onMultiInstance();
+    void onUnsecureWiFi();
+    void onTimeSpoofing();
+    void onLocationSpoofing();
 } 
