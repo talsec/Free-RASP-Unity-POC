@@ -20,6 +20,7 @@ public class TalsecPlugin : MonoBehaviour
     // Singleton instance
     private static TalsecPlugin _instance;
     private ThreatDetectedCallback threatDetectedCallback;
+    private RASPStatusCallback raspStatusCallback;
     private AndroidJavaObject javaControllerObject;
 
     // Public accessor for the instance
@@ -120,6 +121,10 @@ public class TalsecPlugin : MonoBehaviour
         this.threatDetectedCallback = callback;
     }
 
+    public void setRASPStatusCallback(RASPStatusCallback callback) {
+        this.raspStatusCallback = callback;
+    }
+
     // This method will be called from the native side of the code
     // both iOS & Android will use this method
     // hence all the threat types for both platforms are handled here
@@ -127,6 +132,10 @@ public class TalsecPlugin : MonoBehaviour
     {
         if(this.threatDetectedCallback != null) {
                 switch(talsecScanResultCallback) {
+                    case "onAllChecksFinished":
+                        if(this.raspStatusCallback != null)
+                            this.raspStatusCallback.onAllChecksFinished();
+                        break;
                     case "onAppIntegrity":
                         this.threatDetectedCallback.onAppIntegrity();
                         break;

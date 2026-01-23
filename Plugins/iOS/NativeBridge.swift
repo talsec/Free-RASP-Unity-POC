@@ -40,6 +40,8 @@ extension SecurityThreatCenter: SecurityThreatHandler {
                 message = "onScreenshot"
             case .screenRecording:
                 message = "screenRecording"
+            case .timeSpoofing:
+                message = "onTimeSpoofing"
         }
 
         message.withCString { messagePtr in
