@@ -3,7 +3,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-public class Game : MonoBehaviour, ThreatDetectedCallback
+public class Game : MonoBehaviour, ThreatDetectedCallback, RASPStatusCallback
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -18,11 +18,17 @@ public class Game : MonoBehaviour, ThreatDetectedCallback
                 packageName = "com.unity.freeRASP",
                 signingCertificateHashBase64 = new string[] { "Tmac/QIomCqEGS1jYqy9cMMrqaitVoZLpjXzCMnt55Q=" },
                 supportedAlternativeStores = new string[] { "com.sec.android.app.samsungapps" }
+            },
+            iosConfig = new IOSConfig
+            {
+                appBundleIds = new string[] { "com.unity.freeRASP" },
+                appTeamId = "TEAM ID"
             }
         };
         
         // set callback
         TalsecPlugin.Instance.setThreatDetectedCallback(this); 
+        TalsecPlugin.Instance.setRASPStatusCallback(this);
         // initialize talsec with new unified config
         TalsecPlugin.Instance.initTalsec(config);
     }
@@ -116,6 +122,11 @@ public class Game : MonoBehaviour, ThreatDetectedCallback
 
     public void onLocationSpoofing() {
         Debug.Log("Unity - Location spoofing detected");
+    }
+
+    public void onAllChecksFinished()
+    {
+        Debug.Log("Unity - All checks finished");
     }
 
 }
