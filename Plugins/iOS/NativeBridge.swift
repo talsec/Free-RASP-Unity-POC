@@ -46,7 +46,7 @@ extension SecurityThreatCenter: SecurityThreatHandler, RaspExecutionState {
             case .screenshot:
                 message = "onScreenshot"
             case .screenRecording:
-                message = "screenRecording"
+                message = "onScreenRecording"
             case .timeSpoofing:
                 message = "onTimeSpoofing"
         }
