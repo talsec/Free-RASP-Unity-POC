@@ -6,7 +6,14 @@ import TalsecRuntime
 @_silgen_name("send_message_to_unity")
 func send_message_to_unity(_ threatType: UnsafePointer<CChar>)
 
-extension SecurityThreatCenter: SecurityThreatHandler {
+extension SecurityThreatCenter: SecurityThreatHandler, RaspExecutionState {
+    
+    public func onAllChecksFinished() {
+        "onAllChecksFinished".withCString { messagePtr in
+            send_message_to_unity(messagePtr)
+        }
+    }
+
     public func threatDetected(_ securityThreat: TalsecRuntime.SecurityThreat) {
 
         var message = "unknown";
@@ -39,7 +46,9 @@ extension SecurityThreatCenter: SecurityThreatHandler {
             case .screenshot:
                 message = "onScreenshot"
             case .screenRecording:
-                message = "screenRecording"
+                message = "onScreenRecording"
+            case .timeSpoofing:
+                message = "onTimeSpoofing"
         }
 
         message.withCString { messagePtr in

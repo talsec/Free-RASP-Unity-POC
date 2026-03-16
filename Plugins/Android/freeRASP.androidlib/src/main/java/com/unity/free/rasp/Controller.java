@@ -6,6 +6,7 @@ import com.unity3d.player.UnityPlayer;
 import com.aheaditec.talsec_security.security.api.SuspiciousAppInfo;
 import com.aheaditec.talsec_security.security.api.Talsec;
 import com.aheaditec.talsec_security.security.api.TalsecConfig;
+import com.aheaditec.talsec_security.security.api.TalsecMode;
 import com.aheaditec.talsec_security.security.api.ThreatListener;
 
 import java.util.List;
@@ -13,10 +14,25 @@ import java.util.List;
 public class Controller implements ThreatListener.ThreatDetected, ThreatListener.DeviceState
 {
     private static final String TAG = Controller.class.getSimpleName();
+
+    public static class AppRaspExecutionState extends ThreatListener.RaspExecutionState {
+        private String gameObjectName;
+        public void setGameObjectCallback(String gameObjectName) {
+            this.gameObjectName = gameObjectName;
+        }
+        @Override
+        public void onAllChecksFinished() {
+            UnityPlayer.UnitySendMessage(this.gameObjectName, "scanResult", "onAllChecksFinished");
+        }
+    }
+
     private boolean talSecInitialized;
     private String gameObjectName;
+    private AppRaspExecutionState appRaspExecutionState;
+
     public Controller() {
         talSecInitialized = false;
+        appRaspExecutionState = new AppRaspExecutionState();
     }
 
     public void initializeTalsec(Context context, String packageName,
@@ -30,9 +46,9 @@ public class Controller implements ThreatListener.ThreatDetected, ThreatListener
                     .watcherMail(watcherEmailAddress)
                     .prod(isProd)
                     .build();
-            ThreatListener threatListener = new ThreatListener(this, this);
+            ThreatListener threatListener = new ThreatListener(this, this, appRaspExecutionState);
             threatListener.registerListener(context);
-            Talsec.start(context, config);
+            Talsec.start(context, config, TalsecMode.BACKGROUND);
             talSecInitialized = true;
         }
     }
@@ -46,6 +62,7 @@ public class Controller implements ThreatListener.ThreatDetected, ThreatListener
 
     public void setUnityGameObjectCallback(String gameObjectName) {
         this.gameObjectName = gameObjectName;
+        this.appRaspExecutionState.setGameObjectCallback(this.gameObjectName);
     }
 
     @Override
@@ -126,5 +143,25 @@ public class Controller implements ThreatListener.ThreatDetected, ThreatListener
     @Override
     public void onSystemVPNDetected() {
         UnityPlayer.UnitySendMessage(this.gameObjectName, "scanResult", "onSystemVPN");
-    }       
+    } 
+    
+    @Override
+    public void onMultiInstanceDetected() {
+        UnityPlayer.UnitySendMessage(this.gameObjectName, "scanResult", "onMultiInstance");
+    }
+
+    @Override
+    public void onUnsecureWifiDetected() {
+        UnityPlayer.UnitySendMessage(this.gameObjectName, "scanResult", "onUnsecureWiFi");
+    }
+
+    @Override
+    public void onTimeSpoofingDetected() {
+        UnityPlayer.UnitySendMessage(this.gameObjectName, "scanResult", "onTimeSpoofing");
+    }
+
+    @Override
+    public void onLocationSpoofingDetected() {
+        UnityPlayer.UnitySendMessage(this.gameObjectName, "scanResult", "onLocationSpoofing");
+    }
 }
